@@ -1,7 +1,10 @@
 export default class UserDto {
     email;
     id;
-    isActicated;
+    isActivated;
+    name;
+    surname;
+    isAdmin;
 
 
     constructor(model) {
@@ -9,6 +12,7 @@ export default class UserDto {
         this.id = model._id
         this.name = model.name
         this.surname = model.surname
-        this.isActicated = model.isActicated
+        this.isActivated = model.isActivated
+        this.isAdmin = model.isAdmin
     }
 }
