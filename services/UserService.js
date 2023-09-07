@@ -79,15 +79,6 @@ class UserService{
         return{...tokens, user : userDTO}
     }
 
-    async getUsersPosts(user){
-        const posts = await Post.find({author : user})
-        const profileOwner = await User.findById(user)
-        const profileData = {
-            posts,
-            profileOwner,
-        }
-        return profileData;
-    }
 
     async getAllUsers() {
         const users = await User.find();
@@ -102,6 +93,12 @@ class UserService{
         else{
             return false
         }
+    }
+
+    async deleteUser(id) {
+        const user = await User.findById(id);
+        await User.findByIdAndDelete(id);
+        return user
     }
 }
 

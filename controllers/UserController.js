@@ -85,15 +85,17 @@ async getUser(req, res, next) {
   }
 }
 
-async getUsersPosts(req, res, next) {
+async deleteUser(req, res, next) {
   try {
-      const user = req.params.id
-      const posts = await userServiceContainer.resolve("userService").getUsersPosts(user);
-      return res.json(posts);
+      const {id} = req.body
+      const user = await userServiceContainer.resolve("userService").deleteUser(id);
+      return res.json(user.email + " deleted");
   } catch (e) {
       next(e);
   }
 }
+
+
 
 }
 
