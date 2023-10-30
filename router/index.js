@@ -10,6 +10,7 @@ export const router = new Router();
 const postService = postServiceContainer.resolve("postService")
 
 router.post("/registration", body('email').isEmail(), body('password').isLength({ min: 4, max: 30 }), userController.registration)
+router.post("/adduser", body('email').isEmail(), body('password').isLength({ min: 4, max: 30 }), userController.addUser)
 router.post("/login", userController.login)
 router.post("/logout", userController.logout)
 router.get("/activate/:link", userController.activate)

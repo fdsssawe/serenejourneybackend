@@ -31,6 +31,19 @@ class UserService{
         return{...tokens, user : userDTO}
     }
 
+    async addUser (email, name, surname, password){
+        const candidate = await User.findOne({email})
+        if (candidate){
+            throw ApiError.BadRequests(`There is account with such email : ${email}`)
+        }
+        const hashPassword = await bcrypt.hash(password,3);
+        const activationLink = v4()
+        const user = await User.create({email, name, surname, password : hashPassword , activationLink})
+        const userDTO = new UserDto(user)
+
+        return{user : userDTO}
+    }
+
     async activate(activationLink){
         const user = await User.findOne({activationLink})
         if(!user){

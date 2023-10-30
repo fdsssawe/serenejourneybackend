@@ -23,6 +23,20 @@ class UserController {
     }
   }
 
+  async addUser(req,res,next){
+    try{
+      const errors = validationResult(req)
+      if(!errors.isEmpty()){
+        return next(ApiError.BadRequests('Validation error , make sure your email is correct', errors.array())) 
+      }
+      const {email, name, surname, password} = req.body
+      const userData = await userServiceContainer.resolve("userService").addUser(email, name, surname, password)
+      return res.json(userData)
+    }catch(e){
+      next(e);
+    }
+  }
+
   async login(req,res,next){
         try {
             const {email, password} = req.body;
