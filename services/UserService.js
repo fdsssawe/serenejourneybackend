@@ -9,6 +9,8 @@ import Post from "../model/Post.js"
 import mongoose from "mongoose"
 import mailServiceContainer from "./MailService.js"
 import { createContainer , asValue } from "awilix"
+import jwt from "jsonwebtoken"
+import nodemailer from "nodemailer"
 
 dotenv.config()
 
@@ -112,6 +114,25 @@ class UserService{
         const user = await User.findById(id);
         await User.findByIdAndDelete(id);
         return user
+    }
+
+    async forgotPassword(email) {
+        const user = await User.findOne({ email });
+        if (!user) {
+            throw ApiError.BadRequest('User not found');
+        }
+        
+        const secret = process.env.JWT_SECRET + user.password;
+        const payload = {
+            email: user.email,
+            id: user._id
+        };
+
+        const token = jwt.sign(payload, secret, { expiresIn: '15m' });
+
+        const link = `http://localhost:3000/login/reset-password/${user._id}/${token}`;
+
+        await mailServiceContainer.resolve("mailService").sendResetPasswordMail(email, link);
     }
 }
 

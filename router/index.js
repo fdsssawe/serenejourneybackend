@@ -17,6 +17,9 @@ router.get("/activate/:link", userController.activate)
 router.get("/refresh", userController.refresh)
 router.get("/users", authMiddleware, userController.getUsers)
 router.post("/deleteuser", userController.deleteUser)
+router.post("/forgot-password", userController.forgotPassword)
+router.get("/reset-password/:id/:token", userController.resetPassword)
+router.post("/reset-password-change/:id/:token", userController.resetPasswordPost)
 
 
 router.post("/isuser" , userController.getUser)

@@ -4,6 +4,8 @@ import { validationResult } from "express-validator"
 import { ApiError } from "../exceptions/apiError.js"
 import User from "../model/User.js"
 import userServiceContainer from "../services/UserService.js"
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 
 dotenv.config()
 
@@ -109,7 +111,77 @@ async deleteUser(req, res, next) {
   }
 }
 
+async forgotPassword(req, res, next) {
+  try {
+    const { email } = req.body;
+    const result = await userServiceContainer.resolve("userService").forgotPassword(email);
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+}
 
+
+
+async resetPassword(req,res,next) {
+  try {
+
+    const { id, token } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.json("User not found");
+    }
+    
+    const secret = process.env.JWT_SECRET + user.password;
+
+    try {
+        const payload = jwt.verify(token, secret);
+        return res.json(true)
+    }
+    catch (e) {
+      return res.json("Token is not valid or expired");
+    }
+
+  } catch (e) {
+    next(e);
+  }
+
+}
+
+async resetPasswordPost(req, res, next) {
+  try {
+    const {password, cpassword} = req.body
+    const { id, token } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.json("User not found");
+    }
+    
+    const secret = process.env.JWT_SECRET + user.password;
+
+    try {
+        const payload = jwt.verify(token, secret);
+        if(password === cpassword){
+          user.password = await bcrypt.hash(password,3)
+          user.save()
+          return res.json("Password changed")
+        }
+        else{
+          return res.json("Passwords do not match")
+        }
+        
+    }
+    catch (e) {
+      return res.json("Token is not valid or expired");
+    }
+
+  } catch (e) {
+    next(e);
+  }
+
+}
 
 }
 
