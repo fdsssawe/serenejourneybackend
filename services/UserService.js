@@ -116,6 +116,15 @@ class UserService{
         return user
     }
 
+    async changePassword(id, password) {
+        const user = await User.findById(id);
+        const hashPassword = await bcrypt.hash(password, 3);
+        user.password = hashPassword
+        user.save()
+        
+        return user
+    }
+
     async forgotPassword(email) {
         const user = await User.findOne({ email });
         if (!user) {

@@ -121,7 +121,15 @@ async forgotPassword(req, res, next) {
   }
 }
 
-
+async changePassword(req, res, next) {
+  try {
+    const { id, password } = req.body;
+    const result = await userServiceContainer.resolve("userService").changePassword(id,password);
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+}
 
 async resetPassword(req,res,next) {
   try {

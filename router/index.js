@@ -20,6 +20,7 @@ router.post("/deleteuser", userController.deleteUser)
 router.post("/forgot-password", userController.forgotPassword)
 router.get("/reset-password/:id/:token", userController.resetPassword)
 router.post("/reset-password-change/:id/:token", userController.resetPasswordPost)
+router.post("/changePassword", authMiddleware, userController.changePassword)
 
 
 router.post("/isuser" , userController.getUser)
