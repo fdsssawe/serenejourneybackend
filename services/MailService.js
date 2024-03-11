@@ -51,6 +51,23 @@ class MailService{
             `
         })
     }
+
+    async sendChangeEmailMail(to,link){
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER,
+            to,
+            subject: `Change email for your Serene Jerney account`,
+            text: '',
+            html:
+            `
+                <div>
+                    <h1>Follow link below to change your email </h1>
+                    <a href="${link}">${link}</a>
+                </div>
+
+            `
+        })
+    }
 }
 
 const mailServiceContainer = createContainer()

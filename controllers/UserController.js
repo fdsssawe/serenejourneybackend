@@ -131,6 +131,62 @@ async changePassword(req, res, next) {
   }
 }
 
+async updateProfile(req, res, next) {
+  try {
+    const { id, name, surname } = req.body;
+    const result = await userServiceContainer.resolve("userService").updateProfile(id,name, surname);
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+}
+
+async changeEmail(req, res, next) {
+  try {
+    const { email } = req.body;
+    const result = await userServiceContainer.resolve("userService").changeEmail(email);
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+}
+
+async changeEmailCheck(req,res,next) {
+  try {
+
+    const { id, token } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.json("User not found");
+    }
+    
+    const secret = process.env.JWT_SECRET + user.password;
+
+    try {
+        const payload = jwt.verify(token, secret);
+        return res.json(true)
+    }
+    catch (e) {
+      return res.json("Token is not valid or expired");
+    }
+
+  } catch (e) {
+    next(e);
+  }
+
+}
+
+async changeEmailPost(req, res, next) {
+  try {
+    const { id, email } = req.body;
+    const result = await userServiceContainer.resolve("userService").changeEmailConfirm(id,email);
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+}
+
 async resetPassword(req,res,next) {
   try {
 

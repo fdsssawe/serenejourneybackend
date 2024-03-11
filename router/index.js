@@ -21,6 +21,7 @@ router.post("/forgot-password", userController.forgotPassword)
 router.get("/reset-password/:id/:token", userController.resetPassword)
 router.post("/reset-password-change/:id/:token", userController.resetPasswordPost)
 router.post("/changePassword", authMiddleware, userController.changePassword)
+router.post("/update-profile", authMiddleware, userController.updateProfile)
 
 
 router.post("/isuser" , userController.getUser)

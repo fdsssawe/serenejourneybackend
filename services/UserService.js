@@ -125,6 +125,15 @@ class UserService{
         return user
     }
 
+    async updateProfile(id, name, surname) {
+        const user = await User.findById(id);
+        user.name = name
+        user.surname = surname
+        user.save()
+        
+        return user
+    }
+
     async forgotPassword(email) {
         const user = await User.findOne({ email });
         if (!user) {
@@ -143,6 +152,34 @@ class UserService{
 
         await mailServiceContainer.resolve("mailService").sendResetPasswordMail(email, link);
     }
+
+    async changeEmail(email) {
+        const user = await User.findOne({ email });
+        if (!user) {
+            throw ApiError.BadRequest('User not found');
+        }
+        
+        const secret = process.env.JWT_SECRET + user.password;
+        const payload = {
+            email: user.email,
+            id: user._id
+        };
+
+        const token = jwt.sign(payload, secret, { expiresIn: '15m' });
+
+        const link = `http://localhost:3000/login/change-email/${user._id}/${token}`;
+
+        await mailServiceContainer.resolve("mailService").sendChangeEmailMail(email, link);
+    }
+
+    async changeEmailConfirm(id, email) {
+        const user = await User.findById(id);
+        user.email = email
+        user.save()
+        
+        return user
+    }
+    
 }
 
 const userService = new UserService()
