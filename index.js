@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerui from "swagger-ui-express"
 
+
 dotenv.config()
 
 
@@ -61,7 +62,7 @@ mongo.connect(process.env.MONGO_URL,
 mongo.set('strictQuery', true);
 
 const app = express();
-
+app.use('/uploads', express.static('uploads'));
 
 app.use(cors({
     credentials : true,
