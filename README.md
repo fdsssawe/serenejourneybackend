@@ -39,7 +39,13 @@ SMTP_PASSWORD : password for this email
     - [x] DB connection
     - [X] Schemas for users
     - [ ] Schemas for Travel packages, Hotels, Order , Products ...
-    
+
+3. ### Blogs
+   
+    - [x] Blog model
+    - [x] Routes for creating and getting blogs
+    - [ ] Blog editting
+
 6. ### Tests
    
   - [ ] Soon...
