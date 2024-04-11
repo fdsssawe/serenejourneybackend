@@ -18,61 +18,64 @@ class MailService{
         })
     }
 
-    async sendActivisionMail(to,link){
+    async sendMail(to, subject, html) {
         await this.transporter.sendMail({
             from: process.env.SMTP_USER,
             to,
-            subject: `${process.env.API_URL} account activation`,
+            subject,
             text: '',
-            html:
-            `
-                <div>
-                    <h1>Follow link below to activate your account </h1>
-                    <a href="${link}">${link}</a>
-                </div>
-
-            `
-        })
+            html
+        });
     }
 
-    async sendResetPasswordMail(to,link){
-        await this.transporter.sendMail({
-            from: process.env.SMTP_USER,
-            to,
-            subject: `Reset password for your Serene Jerney account`,
-            text: '',
-            html:
-            `
-                <div>
-                    <h1>Follow link below to reset your password </h1>
-                    <a href="${link}">${link}</a>
-                </div>
+}
 
-            `
-        })
+class ActivationMailService extends MailService {
+    constructor(to, link) {
+        super();
+        this.to = to;
+        this.link = link;
+        this.subject = `${process.env.API_URL} account activation`;
+        this.html = `
+            <div>
+                <h1>Follow link below to activate your account </h1>
+                <a href="${this.link}">${this.link}</a>
+            </div>
+        `;
     }
+}
 
-    async sendChangeEmailMail(to,link){
-        await this.transporter.sendMail({
-            from: process.env.SMTP_USER,
-            to,
-            subject: `Change email for your Serene Jerney account`,
-            text: '',
-            html:
-            `
-                <div>
-                    <h1>Follow link below to change your email </h1>
-                    <a href="${link}">${link}</a>
-                </div>
+class ResetPasswordMailService extends MailService {
+    constructor(to, link) {
+        super();
+        this.to = to;
+        this.link = link;
+        this.subject = `Reset password for your Serene Jerney account`;
+        this.html = `
+            <div>
+                <h1>Follow link below to reset your password </h1>
+                <a href="${this.link}">${this.link}</a>
+            </div>
+        `;
+    }
+}
 
-            `
-        })
+class MailFactory {
+    createMail(type, to, link) {
+        switch (type) {
+            case 'activation':
+                return new ActivationMailService(to, link);
+            case 'reset':
+                return new ResetPasswordMailService(to, link);
+            default:
+                throw new Error('Invalid mail type');
+        }
     }
 }
 
 const mailServiceContainer = createContainer()
 
-const mailService = new MailService()
+const mailService = new MailFactory()
 
 mailServiceContainer.register({mailService: asValue(mailService)});
 

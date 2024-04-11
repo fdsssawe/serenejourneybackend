@@ -25,7 +25,7 @@ class UserService{
         const hashPassword = await bcrypt.hash(password,3);
         const activationLink = v4()
         const user = await User.create({email, name, surname, password : hashPassword , activationLink})
-        // await mailServiceContainer.resolve("mailService").sendActivisionMail(email,`${process.env.API_URL}/api/activate/${activationLink}`)
+        // await mailServiceContainer.resolve("mailService").createMail("activation",email,`${process.env.API_URL}/api/activate/${activationLink}`)
         const userDTO = new UserDto(user)
         const tokens = tokenServiceContainer.resolve("tokenService").generateTokens({...userDTO})
         await tokenServiceContainer.resolve("tokenService").saveToken(userDTO.id, tokens.refreshToken)
@@ -180,6 +180,22 @@ class UserService{
         return user
     }
     
+}
+
+class UserServiceWithLogging extends UserService {
+    async changePassword(id, password) {
+        console.log(`Changing password for user with id ${id}`);
+        const result = await super.changePassword(id, password);
+        console.log(`Password changed for user with id ${id}`);
+        return result;
+    }
+
+    async updateProfile(id, name, surname) {
+        console.log(`Updating profile for user with id ${id}`);
+        const result = await super.updateProfile(id, name, surname);
+        console.log(`Profile updated for user with id ${id}`);
+        return result;
+    }
 }
 
 const userService = new UserService()

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "start:dev": "nodemon index.js",
-    "test": "echo \"No test specified\" ",
+    "test": "jest",
     "build": "cd client/csletmelearn && npm install && npm run build",
     "test1": "jest --config=jest.config.cjs"
   },
@@ -46,6 +46,6 @@
     "@testing-library/jest-dom": "^5.16.5",
     "axios-mock-adapter": "^1.21.4",
     "babel-jest": "^29.5.0",
-    "jest": "^29.5.0"
+    "jest": "^29.7.0"
   }
 }
